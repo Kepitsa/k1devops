@@ -1,0 +1,28 @@
+---
+- name: Manage Firewall Settings
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure firewalld is installed
+      ansible.builtin.package:
+        name: firewalld
+        state: present
+
+    - name: Start and enable firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Open HTTP and HTTPS ports
+      ansible.builtin.firewalld:
+        service: "{{ item }}"
+        permanent: true
+        state: enabled
+      loop:
+        - http
+        - https
+
+    - name: Reload firewalld to apply changes
+      ansible.builtin.command:
+        cmd: firewall-cmd --reload

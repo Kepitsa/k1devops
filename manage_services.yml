@@ -1,0 +1,20 @@
+---
+- name: Manage Services Playbook
+  hosts: all
+  become: true
+  tasks:
+    - name: Start nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Stop nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: stopped
+
+    - name: Restart nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: restarted

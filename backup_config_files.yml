@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Ensure backup directory exists
+      ansible.builtin.file:
+        path: /backup
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: Backup nginx configuration file
+      ansible.builtin.copy:
+        src: "/etc/nginx/nginx.conf"
+        dest: "/backup/nginx.conf.backup"
+        owner: root
+        group: root
+        mode: '0644'

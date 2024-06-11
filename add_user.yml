@@ -1,0 +1,21 @@
+---
+- name: Add a new user with sudo privileges
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Add user
+      user:
+        name: newadmin
+        password: "{{ '123' | password_hash('sha512') }}"
+        groups: root,sudo
+        append: yes
+        state: present
+        createhome: yes
+
+    - name: Ensure user has sudo privileges without password prompt
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^newadmin'
+        line: 'newadmin ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'

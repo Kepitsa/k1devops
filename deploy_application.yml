@@ -1,0 +1,21 @@
+---
+- name: Deploy application from a Git repository
+  hosts: application_servers
+  become: yes
+  tasks:
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Clone the repository
+      git:
+        repo: 'https://github.com/your-username/your-repository.git'
+        dest: /var/www/html/your-application
+        version: master
+
+    - name: Ensure the application is running
+      service:
+        name: your-application-service
+        state: started
+        enabled: true

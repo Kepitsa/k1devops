@@ -1,0 +1,46 @@
+---
+- name: Install and configure PostgreSQL
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install PostgreSQL
+      apt:
+        name: postgresql
+        state: present
+
+    - name: Install psycopg2
+      apt:
+        name: python3-psycopg2
+        state: present
+
+    - name: Ensure PostgreSQL is running
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Create PostgreSQL database
+      postgresql_db:
+        name: mydb
+        state: present
+        login_user: admin
+        login_password: "{{ admin }}"
+
+    - name: Create PostgreSQL user
+      postgresql_user:
+        db: mydb
+        name: aboba
+        password: "{{ aboba }}"
+        priv: "ALL"
+        state: present
+        login_user: postgres
+        login_password: "{{ postgres_password }}"
+
+    - name: Set PostgreSQL roles and databases
+      postgresql_privs:
+        type: database
+        roles: aboba
+        objs: mydb
+        privs: ALL
+        login_user: postgres
+        login_password: "{{ postgres_password }}"
